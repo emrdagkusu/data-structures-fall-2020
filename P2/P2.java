@@ -81,6 +81,12 @@ public class P2 {
         return high;
     }
 
+    public static void operation(int action, int j) {
+        if (action == 3) {
+
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         URL url = P2.class.getResource("input2.txt");
         File input = new File(url.getPath());

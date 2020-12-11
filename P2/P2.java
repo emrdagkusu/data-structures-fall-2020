@@ -5,18 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Scanner;
-
-class Map {
-    public int counter;
-    public int index;
-
-    Map(int counter, int index) {
-        this.counter = counter;
-        this.index = index;
-    }
-}
 
 public class P2 {
     private static String readFile(File file) throws IOException {
@@ -37,18 +26,18 @@ public class P2 {
         }
     }
 
-    public static int binSearchFirst(int[] array, int N, int key) {
-// Input: int array array[] with N elements in ascending order.
+    public static int binarySearchFirstPlace(int[] array, int N, int key) {
+        // Input: int array a[] with n elements in ascending order.
 //        int key to find.
-// Output: Returns subscript of the first array element >= key.
-//         Returns N if key>array[N-1].
+// Output: Returns subscript of the first a element >= key.
+//         Returns n if key>a[n-1].
 // Processing: Binary search.
         int low, high, mid;
         low = 0;
         high = N - 1;
 // Subscripts between low and high are in search range.
 // Size of range halves in each iteration.
-// When low>high, low==high+1 and array[high]<key and array[low]>=key.
+// When low>high, low==high+1 and a[high]<key and a[low]>=key.
         while (low <= high) {
             mid = (low + high) / 2;
             if (array[mid] < key)
@@ -59,7 +48,7 @@ public class P2 {
         return low;
     }
 
-    public static int binSearchLast(int[] array, int N, int key) {
+    public static int binarySearchLastPlace(int[] array, int N, int key) {
 // Input: int array array[] with N elements in ascending order.
 //        int key to find.
 // Output: Returns subscript of the last array element <= key.
@@ -81,12 +70,6 @@ public class P2 {
         return high;
     }
 
-    public static void operation(int action, int j) {
-        if (action == 3) {
-
-        }
-    }
-
     public static void main(String[] args) throws IOException {
         URL url = P2.class.getResource("input2.txt");
         File input = new File(url.getPath());
@@ -94,14 +77,14 @@ public class P2 {
         try {
             Scanner scan = new Scanner(readFile(input));
             int N = Integer.parseInt(scan.nextLine());
-            int u = 0, v = 0;
+            int u = 0, v = 0, temp, val1, val2, result;
             int[] count = new int[N];
-            int[] countCopy = new int[N];
-            Map[] mapArray = new Map[N];
+            int[] map = new int[N];
+            int[] index = new int[N];
 
             for (int i = 0; i < N; i++) {
-                count[i] = 0;
-                mapArray[i] = new Map(0, i);
+                map[i] = i;
+                index[i] = i;
             }
 
             while (scan.hasNextLine()) {
@@ -116,61 +99,67 @@ public class P2 {
                 if (action.equals("1")) {
                     System.out.println("print by index");
                     for (int i = 0; i < N; i++) {
-                        System.out.printf("%d %d\n", i, count[i]);
+                        System.out.printf("%d %d\n", i, count[map[i]]);
                     }
                     System.out.println("-------");
                 }
 
                 if (action.equals("2")) {
                     System.out.println("print by count");
-
                     for (int i = 0; i < N; i++) {
-                        mapArray[i].counter = count[i];
-                        mapArray[i].index = i;
+                        System.out.printf("%d %d\n", index[i], count[i]);
                     }
-
-                    Map temp;
-                    for (int i = 1; i < N; i++) {
-                        for (int j = 0; j < N - i; j++) {
-                            if (mapArray[j].counter > mapArray[j + 1].counter) {
-                                temp = mapArray[j];
-                                mapArray[j] = mapArray[j + 1];
-                                mapArray[j + 1] = temp;
-                            }
-                        }
-                    }
-
-                    for (int i = 0; i < N; i++) {
-                        System.out.printf("%d %d\n", mapArray[i].index, mapArray[i].counter);
-                    }
-
                     System.out.println("-------");
                 }
 
                 if (action.equals("3")) {
                     u = Integer.parseInt(line[1]);
-                    count[u]++;
+                    u = map[u];
+                    int value = count[u];
+                    int rightPlace = binarySearchLastPlace(count, N, value);
+
+                    temp = map[index[u]];
+                    map[index[u]] = map[index[rightPlace]];
+                    map[index[rightPlace]] = temp;
+
+                    temp = index[u];
+                    index[u] = index[rightPlace];
+                    index[rightPlace] = temp;
+
+                    count[rightPlace]++;
                 }
 
                 if (action.equals("4")) {
                     u = Integer.parseInt(line[1]);
-                    count[u]--;
+                    u = map[u];
+                    int value = count[u];
+                    int leftPlace = binarySearchFirstPlace(count, N, value);
+
+                    temp = map[index[u]];
+                    map[index[u]] = map[index[leftPlace]];
+                    map[index[leftPlace]] = temp;
+
+                    temp = index[u];
+                    index[u] = index[leftPlace];
+                    index[leftPlace] = temp;
+
+                    count[leftPlace]--;
                 }
 
                 if (action.equals(("5"))) {
                     u = Integer.parseInt(line[1]);
                     v = Integer.parseInt(line[2]);
 
-                    for (int i = 0; i < N; i++) {
-                        countCopy[i] = count[i];
+                    val1 = binarySearchFirstPlace(count, N, u);
+                    val2 = binarySearchLastPlace(count, N, v);
+                    if (val1 == -1 && val2 == -1) {
+                        result = 0;
+                    } else {
+                        result = (val2 - val1) + 1;
                     }
 
-                    Arrays.sort(countCopy);
-                    int val1 = binSearchFirst(countCopy, N, u);
-                    int val2 = binSearchLast(countCopy, N, v);
-                    int value = (val2 - val1) + 1;
+                    System.out.printf("%d counters valued between %d and %d\n", result, u, v);
 
-                    System.out.printf("%d counters valued between %d and %d\n", value, u, v);
                 }
             }
         } catch (IOException e) {

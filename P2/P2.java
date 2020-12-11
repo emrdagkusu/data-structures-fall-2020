@@ -1,9 +1,6 @@
 package P2;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.Scanner;
 
@@ -27,52 +24,58 @@ public class P2 {
     }
 
     public static int binarySearchFirstPlace(int[] array, int N, int key) {
-        // Input: int array a[] with n elements in ascending order.
-//        int key to find.
-// Output: Returns subscript of the first a element >= key.
-//         Returns n if key>a[n-1].
-// Processing: Binary search.
+//        To be able to make binary search we need leftmost and rightmost element
         int low, high, mid;
         low = 0;
         high = N - 1;
-// Subscripts between low and high are in search range.
-// Size of range halves in each iteration.
-// When low>high, low==high+1 and a[high]<key and a[low]>=key.
+//        If low is equal to high or right of the right iteration can stop
         while (low <= high) {
+//            Finding the middle index
             mid = (low + high) / 2;
-            if (array[mid] < key)
+//            If mid index of given array is smaller than the key value that wanted to be found
+//            Lowest index will be one right index from mid index
+            if (array[mid] < key) {
                 low = mid + 1;
+            }
+//            Other ways highest index will be one left index from mid index
             else
                 high = mid - 1;
         }
+//        Finally if the key value is not in the array low will be zero
+//        Or it will return the leftmost key value's index in the array
         return low;
     }
 
     public static int binarySearchLastPlace(int[] array, int N, int key) {
-// Input: int array array[] with N elements in ascending order.
-//        int key to find.
-// Output: Returns subscript of the last array element <= key.
-//         Returns -1 if key<array[0].
-// Processing: Binary search.
+//        To be able to make binary search we need leftmost and rightmost element
         int low, high, mid;
         low = 0;
         high = N - 1;
-// subscripts between low and high are in search range.
-// size of range halves in each iteration.
-// When low>high, low==high+1 and array[high]<=key and array[low]>key.
+//        If low is equal to high or right of the right iteration can stop
         while (low <= high) {
+//            Finding the middle index
             mid = (low + high) / 2;
-            if (array[mid] <= key)
+//            If mid index of given array is equal to or smaller than the key value that wanted to be found
+//            Lowest index will be one right index from mid index
+            if (array[mid] <= key) {
                 low = mid + 1;
-            else
+            }
+//            Other ways highest index will be one left index from mid index
+            else {
                 high = mid - 1;
+            }
         }
+//        Finally if the key value is not in the array high will be zero
+//        Or it will return the rightmost key value's index in the array
         return high;
     }
 
     public static void main(String[] args) throws IOException {
-        URL url = P2.class.getResource("input2.txt");
-        File input = new File(url.getPath());
+//        Inserting input files / To give the other input, input name can be changed
+        URL inurl = P2.class.getResource("input1.txt");
+        File input = new File(inurl.getPath());
+//        Creating and writing output file / Output file will be directly created
+        BufferedWriter writer = new BufferedWriter(new FileWriter("out1.txt"));
 
         try {
             Scanner scan = new Scanner(readFile(input));
@@ -82,6 +85,7 @@ public class P2 {
             int[] map = new int[N];
             int[] index = new int[N];
 
+//            Initializing the map and index arrays
             for (int i = 0; i < N; i++) {
                 map[i] = i;
                 index[i] = i;
@@ -93,31 +97,44 @@ public class P2 {
                 String action = line[0];
 
                 if (action.equals("0")) {
+                    writer.flush();
+                    writer.close();
                     break;
                 }
 
                 if (action.equals("1")) {
-                    System.out.println("print by index");
+//                    System.out.println("print by index");
+                    writer.append("print by index\n");
                     for (int i = 0; i < N; i++) {
-                        System.out.printf("%d %d\n", i, count[map[i]]);
+//                        System.out.printf("%d %d\n", i, count[map[i]]);
+                        writer.write( i + " " + count[map[i]]);
+                        writer.newLine();
                     }
-                    System.out.println("-------");
+//                    System.out.println("-------");
+                    writer.append("-------\n");
+
                 }
 
                 if (action.equals("2")) {
-                    System.out.println("print by count");
+//                    System.out.println("print by count");
+                    writer.append("print by count\n");
                     for (int i = 0; i < N; i++) {
-                        System.out.printf("%d %d\n", index[i], count[i]);
+//                        System.out.printf("%d %d\n", index[i], count[i]);
+                        writer.write(index[i] + " " + count[i]);
+                        writer.newLine();
                     }
-                    System.out.println("-------");
+//                    System.out.println("-------");
+                    writer.append("-------\n");
                 }
 
                 if (action.equals("3")) {
                     u = Integer.parseInt(line[1]);
+//                    Finding where place u in the count array via using map array
                     u = map[u];
                     int value = count[u];
+//                    Finding rightmost place with that value in the count array in O(logn) (Binary Search)
                     int rightPlace = binarySearchLastPlace(count, N, value);
-
+//                    Before increasing the value of the index, we should prepare the map and index arrays via swapping in O(1)
                     temp = map[index[u]];
                     map[index[u]] = map[index[rightPlace]];
                     map[index[rightPlace]] = temp;
@@ -125,16 +142,17 @@ public class P2 {
                     temp = index[u];
                     index[u] = index[rightPlace];
                     index[rightPlace] = temp;
-
+//                    Increasing the value of given index
                     count[rightPlace]++;
                 }
 
                 if (action.equals("4")) {
                     u = Integer.parseInt(line[1]);
+//                    Finding where place u in the count array via using map array
                     u = map[u];
                     int value = count[u];
                     int leftPlace = binarySearchFirstPlace(count, N, value);
-
+//                    Before decreasing the value of the index, we should prepare the map and index arrays via swapping in O(1)
                     temp = map[index[u]];
                     map[index[u]] = map[index[leftPlace]];
                     map[index[leftPlace]] = temp;
@@ -142,23 +160,29 @@ public class P2 {
                     temp = index[u];
                     index[u] = index[leftPlace];
                     index[leftPlace] = temp;
-
+//                    Decreasing the value of given index
                     count[leftPlace]--;
                 }
 
                 if (action.equals(("5"))) {
                     u = Integer.parseInt(line[1]);
                     v = Integer.parseInt(line[2]);
-
+//                    Finding the leftmost index in the array with given interval's smallest side
                     val1 = binarySearchFirstPlace(count, N, u);
+//                    Finding the rightmost index in the array with given interval's biggest side
                     val2 = binarySearchLastPlace(count, N, v);
+//                    If both are zero that means there is no element inside that interval
                     if (val1 == -1 && val2 == -1) {
                         result = 0;
-                    } else {
+                    }
+//                    To find the exact number we should add 1
+                    else {
                         result = (val2 - val1) + 1;
                     }
 
-                    System.out.printf("%d counters valued between %d and %d\n", result, u, v);
+//                    System.out.printf("%d counters valued between %d and %d\n", result, u, v);
+                    writer.write(result + " counters valued between " + u + " and " + v);
+                    writer.newLine();
 
                 }
             }

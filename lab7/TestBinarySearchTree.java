@@ -19,8 +19,8 @@ public class TestBinarySearchTree {
         binarySearchTree.display(root);
         System.out.println("-----------------------------------------------------");
 //        Finding whether elements inside the BST
-        binarySearchTree.find(25);
-        binarySearchTree.find(47);
+        System.out.println(binarySearchTree.find(25));
+        System.out.println(binarySearchTree.find(47));
 //        If we try an element that is already inside the BST
         binarySearchTree.insert(13);
 

@@ -10,7 +10,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Test {
+public class TestMain {
 //    readFile function that provided the course object oriented programming last year
     static String readFile(File file) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -54,7 +54,7 @@ public class Test {
         System.out.print("Enter file name includes names: ");
 //        Getting the name of input file (starwars.txt)
         String fileNames = scan.nextLine();
-        URL inSW = Test.class.getResource(fileNames);
+        URL inSW = TestMain.class.getResource(fileNames);
         File inputSW = new File(inSW.getPath());
 //        names keeps all names in the starwars.txt
         ArrayList<String> names = scanFile(inputSW);
@@ -62,7 +62,7 @@ public class Test {
         System.out.print("Enter file name includes test objects: ");
 //        Getting the name of the file includes testObjects (test.txt)
         String fileSearch = scan.nextLine();
-        URL inTest = Test.class.getResource(fileSearch);
+        URL inTest = TestMain.class.getResource(fileSearch);
         File inputTest = new File(inTest.getPath());
 //        testObjects keeps all test names in the test.txt
         ArrayList<String> testObjects = scanFile(inputTest);
@@ -89,7 +89,7 @@ public class Test {
         System.out.println("Average time taken for insertion into BST: " + timer / names.size() + " nanoseconds");
 //        Printing the all names in inorder traversal
         System.out.println("\n***INORDER TRAVERSAL***\n");
-        BST.inorder();
+        BST.printInorder();
         System.out.println();
 //        Printing minimum node and time taken to finding it
         BST.searchMin();
